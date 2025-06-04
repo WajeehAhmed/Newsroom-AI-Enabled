@@ -22,10 +22,6 @@
     -   [Run the ETL Process (First-Time Setup)](#run-the-etl-process-first-time-setup)
     -   [Start the FastAPI Server](#start-the-fastapi-server)
     -   [Interact with the API](#interact-with-the-api)
--   [Project Structure](#project-structure)
--   [Future Enhancements](#future-enhancements)
--   [License](#license)
--   [Contact](#contact)
 
 ## Introduction
 
@@ -61,3 +57,95 @@ graph TD
     F -- "Decision: REVISE_SUMMARY" --> D
     F -- "Decision: REVISE_HEADLINE" --> E
     F -- "Decision: REVISE_BOTH" --> D
+````
+
+## Technologies Used
+
+  * **Python 3.9+**
+  * **LangChain**: Framework for developing LLM applications.
+  * **LangGraph**: For building robust, stateful, and cyclic multi-agent applications.
+  * **FastAPI**: For creating a high-performance web API.
+  * **ChromaDB**: A lightweight, local vector database for RAG.
+  * **Hugging Face `transformers`**: For integrating advanced NLP models (e.g., sentiment analysis).
+  * **Hugging Face `datasets`**: For convenient dataset loading.
+  * **Pandas**: For data manipulation and ETL processes.
+  * **Pydantic**: For defining and enforcing structured LLM outputs.
+  * **`sentence-transformers`**: For generating embeddings (`all-MiniLM-L6-v2`).
+
+## Setup & Installation
+
+Follow these steps to get the Newsroom AI running on your local machine.
+
+### Prerequisites
+
+  * Python 3.9 or higher
+  * `pip` (Python package installer)
+  * `git` (for cloning the repository)
+
+### Clone the Repository
+
+First, clone the project repository to your local machine:
+
+```bash
+git clone https://github.com/WajeehAhmed/Newsroom-AI-Enabled.git
+cd Newsroom-AI-Enabled
+```
+
+### Create & Activate Virtual Environment
+
+It's highly recommended to use a virtual environment to manage project dependencies.
+
+**On Windows:**
+
+```bash
+python -m venv newsroom_venv
+.\newsroom_venv\Scripts\activate
+```
+
+**On macOS/Linux:**
+
+```bash
+python3 -m venv newsroom_venv
+source newsroom_venv/bin/activate
+```
+
+### Install Dependencies
+
+Install all the necessary Python packages listed in `requirements.txt`. Pay special attention to the PyTorch installation, as it requires a specific `--index-url` for CPU-only builds.
+
+```bash
+pip install -r requirements.txt --index-url [https://download.pytorch.org/whl/cpu](https://download.pytorch.org/whl/cpu)
+```
+
+### Prepare Your Data
+
+The project uses the `R3troR0b/news-dataset` from Hugging Face. The ETL process (described below) will download, clean, and sample this data into a `news.csv` file, which is then used to populate the vector store. Ensure your ETL script points to the correct paths if you modify this.
+
+### Run the ETL Process (First-Time Setup)
+
+Before running the FastAPI server, you must execute the ETL process to populate your ChromaDB vector store. This involves loading data, performing sentiment analysis, chunking text, and generating embeddings.
+
+Locate the ETL related code (often in a dedicated script or the initial part of `main.py` if designed to run once) and execute it. This will create a `chroma_db` directory in your project root.
+
+### Start the FastAPI Server
+
+Once the `chroma_db` is populated, you can start the FastAPI application:
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+The server will typically run on `http://127.0.0.1:8080`. You should see logs indicating the server has started.
+
+### Interact with the API
+
+You can test the API using tools like `curl`, Postman, or Insomnia. Send a POST request to the `/chat/` endpoint with your query:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Hi, what’s dangerous about AI?"}' \
+  [http://127.0.0.1:8080/chat/](http://127.0.0.1:8080/chat/)
+```
+
+Observe the console logs from your running FastAPI server to see the agents in action, and you'll receive a JSON response from the API containing the generated news summary and headline.
