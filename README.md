@@ -144,8 +144,8 @@ You can test the API using tools like `curl`, Postman, or Insomnia. Send a POST 
 ```bash
 curl -X POST \
   -H "Content-Type: application/json" \
-  -d '{"content": "Hi, what’s dangerous about AI?"}' \
-  [http://127.0.0.1:8080/chat/](http://127.0.0.1:8080/chat/)
+  -d '{"query": "Hi, what’s dangerous about AI?"}' \
+  http://127.0.0.1:8080/research/
 ```
 
 Observe the console logs from your running FastAPI server to see the agents in action, and you'll receive a JSON response from the API containing the generated news summary and headline.
