@@ -1,0 +1,5 @@
+.env
+.vscode
+_pycache_
+newsroom_venv
+chroma_db
